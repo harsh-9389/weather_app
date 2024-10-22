@@ -1,18 +1,24 @@
 import { DateTime } from "luxon";
 
-const API_KEY = "ENTER YOUR API KEY";
+const API_KEY = "1fa9ff4126d95b8db54f3897a208e91c";
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
+
+// const url  = 'https://api.openweathermap.org/data/2.5/weather?lat=51.508&lon=-0.126&appid={9508e492cded58b000e7f6a55544b8fe}'
 
 // https://api.openweathermap.org/data/2.5/onecall?lat=48.8534&lon=2.3488&exclude=current,minutely,hourly,alerts&appid=1fa9ff4126d95b8db54f3897a208e91c&units=metric
 
-const getWeatherData = (infoType, searchParams) => {
+const getWeatherData = async (infoType, searchParams) => {
   const url = new URL(BASE_URL + "/" + infoType);
   url.search = new URLSearchParams({ ...searchParams, appid: API_KEY });
+  // console.log(url)
 
-  return fetch(url).then((res) => res.json());
+  const return_val = await fetch(url).then((res) => res.json());
+  // console.log(return_val)
+  return return_val ;
 };
 
 const formatCurrentWeather = (data) => {
+  // console.log(data)
   const {
     coord: { lat, lon },
     main: { temp, feels_like, temp_min, temp_max, humidity },
@@ -45,7 +51,10 @@ const formatCurrentWeather = (data) => {
 };
 
 const formatForecastWeather = (data) => {
+  console.log("hello")
+  console.log(data) ;
   let { timezone, daily, hourly } = data;
+  console.log(timezone, daily, hourly) ;
   daily = daily.slice(1, 6).map((d) => {
     return {
       title: formatToLocalTime(d.dt, timezone, "ccc"),
@@ -71,14 +80,30 @@ const getFormattedWeatherData = async (searchParams) => {
     searchParams
   ).then(formatCurrentWeather);
 
+  // console.log(formattedCurrentWeather)
+  // console.log('hello world')
+
   const { lat, lon } = formattedCurrentWeather;
 
-  const formattedForecastWeather = await getWeatherData("onecall", {
+  // const formattedForecastWeather = await getWeatherData("onecall", {
+  //   lat,
+  //   lon,
+  //   exclude: "current,minutely,alerts",
+  //   units: searchParams.units,
+  // }).then(formatForecastWeather);
+
+  const Wdata = await getWeatherData("onecall", {
     lat,
     lon,
     exclude: "current,minutely,alerts",
     units: searchParams.units,
-  }).then(formatForecastWeather);
+  })
+
+  // console.log(Wdata) ;
+
+  const formattedForecastWeather = formatForecastWeather(Wdata);
+
+  console.log("hello baby", formattedForecastWeather)
 
   return { ...formattedCurrentWeather, ...formattedForecastWeather };
 };
