@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-const API_KEY = "1fa9ff4126d95b8db54f3897a208e91c";
+const API_KEY = "1fa9ff4126d95b8db54f3897a208e91c";             // API key should be put in .env file I have just kept it here
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
 
 // const url  = 'https://api.openweathermap.org/data/2.5/weather?lat=51.508&lon=-0.126&appid={9508e492cded58b000e7f6a55544b8fe}'
